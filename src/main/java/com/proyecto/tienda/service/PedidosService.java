@@ -15,10 +15,10 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.proyecto.tienda.entity.Cliente;
-import com.proyecto.tienda.entity.Pedidos;
-import com.proyecto.tienda.entity.Producto;
-import com.proyecto.tienda.entity.ProductoPedido;
+import com.proyecto.tienda.model.Cliente;
+import com.proyecto.tienda.model.Pedidos;
+import com.proyecto.tienda.model.Producto;
+import com.proyecto.tienda.model.ProductoPedido;
 import com.proyecto.tienda.repository.ClienteRepository;
 import com.proyecto.tienda.repository.PedidosRepository;
 import com.proyecto.tienda.repository.ProductoRepository;
@@ -124,6 +124,53 @@ public class PedidosService {
 		
 		return pedidosRepository.save(guardarPedido);
 	}
+
+	
+	public String armarComprobante(Pedidos pedidoCreado) {
+		
+		try {
+			//Se arma el body del Json donde se genera el comprobante
+			JSONObject venta = new JSONObject();
+			venta.put("idPedido", pedidoCreado.getIdPedido());
+			venta.put("fecha", pedidoCreado.getFecha());
+			JSONObject cliente = new JSONObject();
+			cliente.put("idCliente", pedidoCreado.getCliente().getId());
+			cliente.put("nombre", pedidoCreado.getCliente().getNombre());
+			cliente.put("apellido", pedidoCreado.getCliente().getApellido());
+			cliente.put("dni", pedidoCreado.getCliente().getDni());
+			venta.put("cliente", cliente);
+			venta.put("totalVenta", pedidoCreado.getTotal());
+			venta.put("cantidadTotalVendida",pedidoCreado.getCantidadProducto());
+			
+			JSONArray listaProducto = new JSONArray();
+			JSONArray listaStockProducto = new JSONArray();
+	
+			List<ProductoPedido> productosVendidos = new ArrayList<>();
+	
+			productosVendidos = productoPedidoService.listaProducto(pedidoCreado.getIdPedido());
+	
+			for(int i=0; i< productosVendidos.size(); i++) {
+				JSONObject producto = new JSONObject();
+				JSONObject stock = new JSONObject();
+				stock.put("idProducto", productosVendidos.get(i).getProducto().getIdProducto());
+				stock.put("stockActualizado", productosVendidos.get(i).getProducto().getStock());
+				producto.put("idProducto", productosVendidos.get(i).getProducto().getIdProducto());
+				producto.put("nombreProducto", productosVendidos.get(i).getProducto().getNombre());
+				producto.put("descripcionProducto", productosVendidos.get(i).getProducto().getDescripcion());
+				producto.put("cantidadVendida", productosVendidos.get(i).getCantidad());
+				producto.put("precioProducto", productosVendidos.get(i).getPrecioProducto());
+				listaProducto.put(producto);
+				listaStockProducto.put(stock);
+			}
+			venta.put("productosVendidos",listaProducto);
+			venta.put("stock", listaStockProducto);
+			
+			return venta.toString();
+		}catch(JSONException e) {
+			String error = e.getMessage();
+			return error;
+		}
+	}
 	
 	//Metodo para validar el pedido antes de generar la venta 
 	public boolean validarPedido(long idCliente, JSONArray productoPedidoJson) {
@@ -152,6 +199,11 @@ public class PedidosService {
 			} catch (JSONException e) {}
 		}
 		return validacion;
+	}
+	
+	public Optional<Pedidos> buscarPedidoPorId (long idPedido) {
+		Optional<Pedidos> obtenerPedido = pedidosRepository.findById(idPedido);
+		return obtenerPedido;
 	}
 
 }

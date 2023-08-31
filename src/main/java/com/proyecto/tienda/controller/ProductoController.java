@@ -2,6 +2,7 @@ package com.proyecto.tienda.controller;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.proyecto.tienda.entity.Producto;
+import com.proyecto.tienda.model.Producto;
 import com.proyecto.tienda.service.ProductoPedidoServicio;
 import com.proyecto.tienda.service.ProductoService;
 
@@ -43,42 +44,51 @@ public class ProductoController {
 	//Metodo para obtener un producto
 	@GetMapping(value = "/buscarproducto/{id}",produces = (MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<?> obtenerProducto(@PathVariable (name = "id") long idProducto){
-		try {
-			Producto buscarProducto = productoService.obtenerProducto(idProducto);
-			return ResponseEntity.ok( buscarProducto );
-		}catch(Exception e) {
-			String mensaje = e.getMessage();
-			return ResponseEntity.badRequest().body("No se pudo buscar el producto" + " " + mensaje);
+		Optional<Producto> obtenerProducto = productoService.obtenerProductoById(idProducto);
+		if(obtenerProducto.isPresent()) {
+			return ResponseEntity.ok(obtenerProducto);
+		}else
+			return ResponseEntity.badRequest().body("{ \"Error\" : \"" + "Producto no existe" + "\" }");
 		}
-	}
+	
 	
 	//Metodo para actualizar producto
 		@PutMapping(value = "/actualizarproducto/{id}", consumes = (MediaType.APPLICATION_JSON_VALUE))
 		public ResponseEntity<?> actualizarProducto (@PathVariable (name = "id") long idProducto, @RequestBody Producto producto) {
-			try {
-				Producto actualizadoProducto = productoService.actualizarProducto(idProducto, producto);
-			return ResponseEntity.ok(actualizadoProducto);
-			}catch(Exception e) {
-				String mensaje = e.getMessage();
-				return ResponseEntity.badRequest().body("No se pudo actualizar el producto" + " " + mensaje);
+			Optional<Producto> obtenerProducto = productoService.obtenerProductoById(idProducto);
+			if(obtenerProducto.isPresent()) {
+				try {
+					Producto actualizadoProducto = productoService.actualizarProducto(idProducto, producto);
+				return ResponseEntity.ok(actualizadoProducto);
+				}catch(Exception e) {
+					String mensaje = e.getMessage();
+					return ResponseEntity.badRequest().body("No se pudo actualizar el producto" + " " + mensaje);
+				}
+			}else {
+				return ResponseEntity.badRequest().body("{ \"Error\" : \"" + "Producto no existe" + "\" }");
 			}
 		}
 		
 	//Metodo para actualizar precio de un producto
 			@PutMapping(value = "/actualizarprecio/{id}", consumes = (MediaType.APPLICATION_JSON_VALUE))
 			public ResponseEntity<?> actualizarPrecioProducto (@PathVariable (name = "id") long idProducto, @RequestBody Producto producto) {
-				try {
-					boolean existeProducto = productoPedidoService.validarProductoVendido(idProducto);
-					if(existeProducto == false) {
-					Producto actualizadoPrecioProducto = productoService.actualizarPrecioProducto(idProducto, producto);
-				return ResponseEntity.ok( actualizadoPrecioProducto);
-					}else {
-						return ResponseEntity.badRequest().body("No se pudo actualizar el precio del producto porque pertenece a un pedido");
-					}
-				}catch(Exception e) {
-					String mensaje = e.getMessage();
-					return ResponseEntity.badRequest().body("No se pudo actualizar el precio del producto" + " " + mensaje);
-					}
+				Optional<Producto> obtenerProducto = productoService.obtenerProductoById(idProducto);
+				if(obtenerProducto.isPresent()) {
+					try {
+						boolean existeProducto = productoPedidoService.validarProductoVendido(idProducto);
+						if(existeProducto == false) {
+						Producto actualizadoPrecioProducto = productoService.actualizarPrecioProducto(idProducto, producto);
+					return ResponseEntity.ok( actualizadoPrecioProducto);
+						}else {
+							return ResponseEntity.badRequest().body("No se pudo actualizar el precio del producto porque pertenece a un pedido");
+						}
+					}catch(Exception e) {
+						String mensaje = e.getMessage();
+						return ResponseEntity.badRequest().body("No se pudo actualizar el precio del producto" + " " + mensaje);
+						}
+				}else {
+					return ResponseEntity.badRequest().body("{ \"Error\" : \"" + "Producto no existe" + "\" }");
+				}
 			}
 			
 			//Metodo para obtener el stock de productos  

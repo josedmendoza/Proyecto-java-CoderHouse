@@ -8,9 +8,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.proyecto.tienda.entity.Pedidos;
-import com.proyecto.tienda.entity.Producto;
-import com.proyecto.tienda.entity.ProductoPedido;
+import com.proyecto.tienda.model.Pedidos;
+import com.proyecto.tienda.model.Producto;
+import com.proyecto.tienda.model.ProductoPedido;
 import com.proyecto.tienda.repository.ProductoPedidoRepository;
 
 
@@ -19,6 +19,8 @@ public class ProductoPedidoServicio {
 
 	@Autowired
 	private  ProductoPedidoRepository productoPedidoRepository;
+	
+	
 	
 	//Metodo para crear lista de productos que se van a comprar
 	public ProductoPedido crearListaProductoPorObjeto(int cantidad, Producto producto,  Pedidos pedido) {
@@ -31,7 +33,7 @@ public class ProductoPedidoServicio {
 		return productoPedidoRepository.save(productoPedido);
 	}
 	
-	//Metodo para buscar la lista de todos los productos pedidos
+	//Metodo para buscar la lista de todos los productos por pedido
 	public List<ProductoPedido> listaProducto (long idPedido){
 		List<ProductoPedido> listarProducto = new ArrayList<>();
 		List<ProductoPedido> buscarProducto =  productoPedidoRepository.findAll();

@@ -1,4 +1,4 @@
-package com.proyecto.tienda.entity;
+package com.proyecto.tienda.model;
 
 import java.util.List;
 

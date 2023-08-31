@@ -1,4 +1,4 @@
-package com.proyecto.tienda.entity;
+package com.proyecto.tienda.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

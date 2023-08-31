@@ -2,10 +2,12 @@ package com.proyecto.tienda.service;
 
 
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.proyecto.tienda.entity.Cliente;
+import com.proyecto.tienda.model.Cliente;
 import com.proyecto.tienda.repository.ClienteRepository;
 
 @Service
@@ -24,6 +26,12 @@ public class ClienteService {
 	public Cliente buscasClientePorId (long idCliente) {
 		return clienteRepository.findById(idCliente).
 				orElseThrow(() -> new RuntimeException("Cliente no encontrado,  ID: " + idCliente));
+	}
+	
+	//Metodo para buscar un cliente
+	public Optional<Cliente> buscarClientePorId (long idCliente) {
+		Optional<Cliente> obtenerCliente = clienteRepository.findById(idCliente);
+		return obtenerCliente;
 	}
 	
 //	Metodo para borrar cliente de la tabla cliente

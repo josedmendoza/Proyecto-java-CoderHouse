@@ -2,11 +2,12 @@ package com.proyecto.tienda.service;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.proyecto.tienda.entity.Producto;
+import com.proyecto.tienda.model.Producto;
 import com.proyecto.tienda.repository.ProductoRepository;
 
 @Service
@@ -49,6 +50,12 @@ public class ProductoService {
 					orElseThrow(() -> new RuntimeException("Producto no encontrado,  ID: " + idProducto));
 		}
 		
+		//Metodo para obtener producto por Id
+		public Optional<Producto> obtenerProductoById (long idProducto) {
+			Optional<Producto> obtenerProducto = productoRepository.findById(idProducto);
+			return obtenerProducto;
+		}
+
 	//Metodo para actualizar stock
 		public Producto actualizarStock (Producto producto, int cantidadVendida){
 			
