@@ -19,6 +19,7 @@ public class ProductoPedido {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "PRODUCTO_PEDIDOID")
 	private Long productoPedidoID;
 	
 	@Column(name = "CANTIDAD")
@@ -29,11 +30,11 @@ public class ProductoPedido {
 
 	//Se realiza la relacion ManyToOne entre las entidaddes producto y pedidos
 	@ManyToOne
-    @JoinColumn(name = "pedidoId")
+    @JoinColumn(name = "PEDIDO_ID")
 	private Pedidos pedidoP;
 	
 	@ManyToOne
-	@JoinColumn(name = "productoId")
+	@JoinColumn(name = "PRODUCTO_ID")
 	private Producto productoP;
 	
 	

@@ -23,6 +23,7 @@ public class Pedidos {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID_PEDIDO")
 	private Long idPedido;
 	
 	@Column(name = "FECHA")
@@ -37,7 +38,7 @@ public class Pedidos {
 	// Se realiza la relacion ManyToOne con la entidad cliente
 	
 	@ManyToOne()
-	@JoinColumn(name= "idCliente")
+	@JoinColumn(name= "ID_CLIENTE")
 	private Cliente cliente;
 	
 	// Se realiza la relacion OneToMany con la entidad cliente

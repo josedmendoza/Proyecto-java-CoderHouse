@@ -19,7 +19,8 @@ public class Cliente {
 	//Con la anotacion  @Id se define la llave primaria y con la anotacion @Column el nombre de las columnas de la entidad
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long idCliente;
+	@Column(name = "ID_CLIENTE")
+	private Integer idCliente;
 	
 	@Column(name = "NOMBRE")
 	private String nombre;
@@ -41,7 +42,7 @@ public class Cliente {
 	public Cliente() {}
 
 
-	public Cliente(Long id, String nombre, String apellido, long dni) {
+	public Cliente(Integer id, String nombre, String apellido, long dni) {
 		this.idCliente = id;
 		this.nombre = nombre;
 		this.apellido = apellido;
@@ -50,12 +51,12 @@ public class Cliente {
 	}
 
 	//Se generan los metodos getter y setter y toString
-	public Long getId() {
+	public Integer getId() {
 		return idCliente;
 	}
 
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.idCliente = id;
 	}
 

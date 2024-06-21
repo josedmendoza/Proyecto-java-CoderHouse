@@ -20,6 +20,7 @@ public class Producto {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID_PRODUCTO")
 	private long idProducto;
 	
 	@Column(name = "NOMBRE")
